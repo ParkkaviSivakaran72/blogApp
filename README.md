@@ -1,0 +1,2 @@
+# blogApp
+learning next js 
