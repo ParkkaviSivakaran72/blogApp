@@ -1,6 +1,7 @@
 "use client";
 import { assets, blog_data } from '@/assets/assets';
 import Image from 'next/image';
+import Link from 'next/link';
 import React, { useState } from 'react';
 import { IoIosArrowDropright } from 'react-icons/io';
 
@@ -34,7 +35,8 @@ const BlogList = () => {
       {/* Blog Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredBlogs.map((blog, index) => (
-          <div key={index} className="bg-white rounded-2xl shadow-lg p-4">
+          <div key={index} id={blog.id} className="bg-white rounded-2xl shadow-lg p-4">
+            <Link href={`/blogs/${blog.id}`}>
             <Image 
               src={blog.image} 
               alt={blog.title}
@@ -42,6 +44,7 @@ const BlogList = () => {
               height={300}
               className="rounded-xl mb-4 object-cover w-full h-[200px]"
             />
+            </Link>
             <h3 className="text-xl font-semibold mb-2">
               {blog.title} - <span className="text-sm text-gray-500">{blog.category}</span>
             </h3>
@@ -57,9 +60,11 @@ const BlogList = () => {
                 />
                 <h5 className="text-sm text-gray-800">{blog.author}</h5>
               </div>
+              <Link href={`/blogs/${blog.id}`}>
               <button className="flex items-center gap-1 text-blue-600 font-medium hover:underline">
                 Read more <IoIosArrowDropright className="text-xl" />
               </button>
+              </Link>
             </div>
           </div>
         ))}
