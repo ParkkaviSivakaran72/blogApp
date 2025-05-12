@@ -1,17 +1,28 @@
 "use client";
 import { assets, blog_data } from '@/assets/assets';
+import axios from 'axios';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IoIosArrowDropright } from 'react-icons/io';
 
 const BlogList = () => {
   const categories = ['All', ...new Set(blog_data.map(blog => blog.category))];
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [blogs,setBlogs] = useState([]);
 
+  const fetchBlogs = async () => {
+    const response = await axios.get('/api/blog')
+    setBlogs(response.data.blogs);
+    console.log(response.data.blogs)
+  }
+
+  useEffect(() => {
+    fetchBlogs();
+  },[])
   const filteredBlogs = selectedCategory === 'All'
-    ? blog_data
-    : blog_data.filter(blog => blog.category === selectedCategory);
+    ? blogs
+    : blogs.filter(blog => blog.category === selectedCategory);
 
   return (
     <div className="p-6">
@@ -35,8 +46,8 @@ const BlogList = () => {
       {/* Blog Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredBlogs.map((blog, index) => (
-          <div key={index} id={blog.id} className="bg-white rounded-2xl shadow-lg p-4">
-            <Link href={`/blogs/${blog.id}`}>
+          <div key={index} id={blog._id} className="bg-white rounded-2xl shadow-lg p-4">
+            <Link href={`/blogs/${blog._id}`}>
             <Image 
               src={blog.image} 
               alt={blog.title}
@@ -60,7 +71,7 @@ const BlogList = () => {
                 />
                 <h5 className="text-sm text-gray-800">{blog.author}</h5>
               </div>
-              <Link href={`/blogs/${blog.id}`}>
+              <Link href={`/blogs/${blog._id}`}>
               <button className="flex items-center gap-1 text-blue-600 font-medium hover:underline">
                 Read more <IoIosArrowDropright className="text-xl" />
               </button>

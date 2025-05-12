@@ -1,10 +1,14 @@
 "use client";
-import { assets, blog_data } from "@/assets/assets";
+import { use } from "react";
+import { assets } from "@/assets/assets";
+import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
 const Page = ({ params }) => {
+  const { id } = use(params); // ✅ Unwrap params properly
+
   const [data, setData] = useState(null);
   const [paragraph, setParagraph] = useState("");
   const [loading, setLoading] = useState(true);
@@ -25,12 +29,23 @@ const Page = ({ params }) => {
     }
   };
 
+  const fetchBlogData = async () => {
+    try {
+      const response = await axios.get("/api/blog", {
+        params: { id },
+      });
+      setData(response.data);
+    } catch (error) {
+      console.error("Failed to fetch blog:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     setLoading(true);
-    const blog = blog_data.find((item) => Number(params.id) === item.id);
-    setData(blog);
-    if (blog) fetchParagraph(blog.title);
-  }, [params.id]);
+    fetchBlogData();
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 p-3 sm:p-6 md:p-10 transition-all duration-300">
@@ -50,29 +65,22 @@ const Page = ({ params }) => {
         {loading ? (
           <div className="flex flex-col items-center justify-center h-64 animate-pulse">
             <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-            <p className="mt-4 text-gray-600 font-medium">
-              Loading your content...
-            </p>
+            <p className="mt-4 text-gray-600 font-medium">Loading your content...</p>
           </div>
         ) : data ? (
           <div className="bg-white shadow-xl hover:shadow-2xl rounded-2xl p-4 sm:p-6 md:p-8 space-y-4 sm:space-y-6 transition-all duration-300 border border-gray-100">
-            {/* Title */}
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 tracking-tight">
               {data.title}
             </h1>
-
-            {/* Blog Image */}
             <div className="overflow-hidden rounded-xl transition-all duration-300 hover:shadow-lg">
               <Image
                 src={data.image}
                 alt="Blog"
                 width={800}
                 height={400}
-                className=" sm:h-[300px] md:h-[400px] rounded-xl object-cover hover:scale-105 transition-transform duration-500"
+                className="sm:h-[300px] md:h-[400px] rounded-xl object-cover hover:scale-105 transition-transform duration-500"
               />
             </div>
-
-            {/* Author Info */}
             <div className="flex items-center gap-3 text-sm sm:text-base text-gray-600 p-2 rounded-lg hover:bg-gray-50 transition-colors duration-300">
               <div className="overflow-hidden rounded-full border-2 border-gray-200">
                 <Image
@@ -85,8 +93,6 @@ const Page = ({ params }) => {
               </div>
               <span className="font-medium">By {data.author}</span>
             </div>
-
-            {/* Description */}
             <div className="prose max-w-none">
               <p className="text-base sm:text-lg text-gray-700 leading-relaxed">
                 {data.description}
