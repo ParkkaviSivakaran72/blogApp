@@ -23,9 +23,10 @@ export async function POST(request){
     const path = `./public/${timeStamp}_${image.name}`;
     await writeFile(path,buffer);
     const imageURL = `/${timeStamp}_${image.name}`;
+    console.log(formData)
 
-    const author_img = formData.get('image');
-    const author_imageBytesData = await image.arrayBuffer();
+    const author_img = formData.get('author_img');
+    const author_imageBytesData = await author_img.arrayBuffer();
     const author_buffer = Buffer.from(author_imageBytesData);
     const author_path = `./public/${timeStamp}_${author_img.name}`;
     await writeFile(author_path,author_buffer);

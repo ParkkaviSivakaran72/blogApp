@@ -8,11 +8,12 @@ import { toast } from 'react-toastify'
 
 const Page = () => {
   const [image, setImage] = useState(false);
+  const [author_img, setauthor_img] = useState(false);
   const [data,setData] = useState({
     title:'',
     description:'',
     category:'',
-    author:'alex',
+    author:'',
     
   })
 
@@ -30,6 +31,7 @@ const Page = () => {
     formData.append('description',data.description)
     formData.append('author',data.author)
     
+    formData.append('author_img',author_img)
     formData.append('image',image)
 
     const response = await axios.post('/api/blog',formData);
@@ -118,7 +120,38 @@ const Page = () => {
           ></textarea>
         </div>
 
-        
+        <div>
+          <label className="block text-gray-700 mb-1">Author Name</label>
+          <input
+            type="text"
+            name='author'
+            onChange={onchangeHanlder}
+            value={data.author}
+            placeholder="Type here"
+            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            required
+          />
+        </div>
+        <div >
+        <p className="text-gray-700 mb-2">Upload author Profile</p>
+          <label htmlFor="author_img" className="cursor-pointer hover:opacity-80 transition-all">
+            <Image
+              src={!author_img ? assets.upload : URL.createObjectURL(author_img)}
+              alt="upload image"
+              width={140}
+              height={140}
+              className="rounded-xl border border-dashed border-gray-300 p-2"
+            />
+          </label>
+          <input
+            onChange={(e) => setauthor_img(e.target.files[0])}
+            type="file"
+            id="author_img"
+            name="author_img"
+            hidden
+            required
+          />
+        </div>
 
         {/* Submit Button */}
         <button
