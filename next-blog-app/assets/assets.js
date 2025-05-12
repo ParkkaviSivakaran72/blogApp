@@ -4,9 +4,11 @@ import id2 from './productivity2.jpeg'
 import id3 from './healthy3.jpeg'
 import id4 from './work4.jpeg'
 import profile from './profile.jpeg'
+import blogI from './blogi.jpeg'
 
 export const assets = {
     blogIcon,
+    blogI
 }
 export const blog_data = [
     {
