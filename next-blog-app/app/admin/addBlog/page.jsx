@@ -1,21 +1,51 @@
 'use client'
 import { assets } from '@/assets/assets'
+import axios from 'axios'
 import { FileUp } from 'lucide-react'
 import Image from 'next/image'
 import React, { useState } from 'react'
+import { toast } from 'react-toastify'
 
 const Page = () => {
   const [image, setImage] = useState(false);
-  
+  const [data,setData] = useState({
+    title:'',
+    description:'',
+    category:'',
+    author:'alex',
+    
+  })
 
+  const onchangeHanlder = (event) => {
+    const name = event.target.name;
+    const value = event.target.value;
+    setData(data =>({...data, [name]:value}))
+    console.log(data)
+  }
+  const onSubmitHandler = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append('title',data.title)
+    formData.append('category',data.category)
+    formData.append('description',data.description)
+    formData.append('author',data.author)
+    
+    formData.append('image',image)
+
+    const response = await axios.post('/api/blog',formData);
+    if(response.data.success){
+        toast.success(response.data.message)
+    }
+    else{
+        toast.error('Error')
+    }
+  }
   return (
     <div className="flex m-4 min-h-screen px-4">
       <form
         className="bg-white  rounded-2xl p-8 w-full max-w-xl space-y-6"
-        onSubmit={(e) => {
-          e.preventDefault()
-          // handle submission logic here
-        }}
+        onSubmit={onSubmitHandler}
+        
       >
         <h2 className="text-2xl font-bold text-gray-800 text-center">Add New Blog</h2>
 
@@ -46,6 +76,9 @@ const Page = () => {
           <label className="block text-gray-700 mb-1">Blog Title</label>
           <input
             type="text"
+            name='title'
+            onChange={onchangeHanlder}
+            value={data.title}
             placeholder="Type here"
             className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             required
@@ -57,6 +90,9 @@ const Page = () => {
           <label className="block text-gray-700 mb-1">Blog Category</label>
           <select
             name="category"
+            
+            onChange={onchangeHanlder}
+            value={data.category}
             className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             required
           >
@@ -73,6 +109,9 @@ const Page = () => {
           <label className="block text-gray-700 mb-1">Blog Description</label>
           <textarea
             rows={4}
+            name='description'
+            onChange={onchangeHanlder}
+            value={data.description}
             placeholder="Type your blog description"
             className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none"
             required

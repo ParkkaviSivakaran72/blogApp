@@ -33,11 +33,13 @@ export async function POST(request){
     
     const blogData = {
         title:`${formData.get('title')}`,
-        description:`${formData.get('description')}`,
+        
         category:`${formData.get('category')}`,
+        description:`${formData.get('description')}`,
         author:`${formData.get('author')}`,
-        image:`${imageURL}`,
+        
         author_img:`${author_imageURL}`,
+        image:`${imageURL}`,
         
     }
     await Blogmodel.create(blogData)

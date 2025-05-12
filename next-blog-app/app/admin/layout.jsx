@@ -1,11 +1,13 @@
 import { assets } from "@/assets/assets";
 import Sidebar from "@/components/adminComponents/Sidebar";
 import Image from "next/image";
+import { ToastContainer} from 'react-toastify';
 
 export default function Layout({ children }) {
   return (
     <div className="flex min-h-screen">
       {/* Sidebar */}
+      <ToastContainer />
       <Sidebar />
 
       {/* Main Content */}
