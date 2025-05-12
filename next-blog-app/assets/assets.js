@@ -5,10 +5,14 @@ import id3 from './healthy3.jpeg'
 import id4 from './work4.jpeg'
 import profile from './profile.jpeg'
 import blogI from './blogi.jpeg'
+import profileIcon from './profileIcon.png'
+import upload from './upload.jpeg'
 
 export const assets = {
     blogIcon,
-    blogI
+    blogI,
+    profileIcon,
+    upload
 }
 export const blog_data = [
     {
