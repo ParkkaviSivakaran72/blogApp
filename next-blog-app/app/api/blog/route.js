@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { writeFile } from 'fs/promises'
 import { model } from "mongoose";
 import Blogmodel from "@/lib/models/blogModel.js";
-
+import fs from 'fs/promises';
 const DBconnect = async () => {
     await connectDB();
 }
@@ -58,3 +58,29 @@ export async function POST(request) {
     return NextResponse.json({ success: true, message: "Blog added" });
 }
 
+export async function DELETE(request) {
+  try {
+    const blogId = request.nextUrl.searchParams.get('id');
+    const blog = await Blogmodel.findById(blogId);
+    
+    if (!blog) {
+      return NextResponse.json({ message: 'Blog not found' }, { status: 404 });
+    }
+
+    // Safely remove images if they exist
+    if (blog.image) {
+      await fs.unlink(`./public/${blog.image}`).catch(() => {});
+    }
+
+    if (blog.author_img) {
+      await fs.unlink(`./public/${blog.author_img}`).catch(() => {});
+    }
+
+    await Blogmodel.findByIdAndDelete(blogId);
+
+    return NextResponse.json({ message: 'Blog deleted' });
+  } catch (error) {
+    console.error('DELETE error:', error);
+    return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+  }
+}

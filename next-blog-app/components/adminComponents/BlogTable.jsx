@@ -1,7 +1,8 @@
 import { assets } from "@/assets/assets";
 import Image from "next/image";
 
-const BlogTable = ({ author_img, author, title, category,date }) => {
+const BlogTable = ({ author_img, author, title, category,date ,deleteBlog,mongoId}) => {
+    const blogDate = new Date(date);
   return (
     <tr className="border-b hover:bg-gray-50 transition-colors duration-200">
       <td className="px-4 py-3 flex items-center gap-3">
@@ -23,9 +24,9 @@ const BlogTable = ({ author_img, author, title, category,date }) => {
           {category ? category : 'Uncategorized'}
         </span>
       </td>
-      <td className="px-4 py-3 text-gray-500 text-sm">{date}</td>
+      <td className="px-4 py-3 text-gray-500 text-sm">{blogDate.toDateString()}</td>
       <td className="px-4 py-3">
-        <button className="text-red-600 hover:text-red-800 font-semibold transition duration-150">
+        <button className="text-red-600 hover:text-red-800 font-semibold transition duration-150" onClick = {() => deleteBlog(mongoId)}>
           Remove
         </button>
       </td>
