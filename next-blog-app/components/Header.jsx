@@ -1,12 +1,31 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { assets } from "@/assets/assets.js";
 import { FaSearch } from "react-icons/fa";
 import { MdOutlineMarkEmailRead } from "react-icons/md";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const Header = () => {
+  const [email,setemail] = useState("");
+
+  const subscription = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append('email',email);
+    const response = await axios.post('/api/email',formData);
+    if(response.data.success){
+      toast.success(response.data.message);
+      setemail('');
+    }
+    else{
+      toast.error('Error');
+    }
+  }
+
+  
   return (
     <header className="bg-gray-100 text-white pt-12 px-10">
       <div className="max-w-7xl mx-auto">
@@ -40,17 +59,20 @@ const Header = () => {
             </p>
 
             {/* Subscribe Form */}
-            <form action="" className="flex justify-center py-5 mb-6">
+            <form action="" className="flex justify-center py-5 mb-6" onSubmit={(e) => {subscription(e)}}>
               <div className="flex items-center space-x-2 w-full max-w-md rounded-lg overflow-hidden shadow-md">
                 <div className="relative flex-1">
                   <MdOutlineMarkEmailRead className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
                   <input
                     type="email"
+                    onChange={(e)=>setemail(e.target.value)}
+                    value={email}
                     placeholder="Enter your email"
                     className="w-full pl-10 pr-4 py-2 bg-gray-100 text-gray-800 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
                 <button
+
                   type="submit"
                   className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >

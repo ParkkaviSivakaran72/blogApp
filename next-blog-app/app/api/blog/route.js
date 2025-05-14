@@ -44,14 +44,11 @@ export async function POST(request) {
 
     const blogData = {
         title: `${formData.get('title')}`,
-
         category: `${formData.get('category')}`,
         description: `${formData.get('description')}`,
         author: `${formData.get('author')}`,
-
         author_img: `${author_imageURL}`,
         image: `${imageURL}`,
-
     }
     await Blogmodel.create(blogData)
     console.log('blog saved')
@@ -62,22 +59,17 @@ export async function DELETE(request) {
   try {
     const blogId = request.nextUrl.searchParams.get('id');
     const blog = await Blogmodel.findById(blogId);
-    
     if (!blog) {
       return NextResponse.json({ message: 'Blog not found' }, { status: 404 });
     }
-
     // Safely remove images if they exist
     if (blog.image) {
       await fs.unlink(`./public/${blog.image}`).catch(() => {});
     }
-
     if (blog.author_img) {
       await fs.unlink(`./public/${blog.author_img}`).catch(() => {});
     }
-
     await Blogmodel.findByIdAndDelete(blogId);
-
     return NextResponse.json({ message: 'Blog deleted' });
   } catch (error) {
     console.error('DELETE error:', error);
